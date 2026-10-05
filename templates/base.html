@@ -1,0 +1,102 @@
+{% load static formatos %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Início{% endblock %} · Voos Corporativos Lavronorte</title>
+  <link href="{% static 'vendor/fontes/fontes.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/app.css' %}" rel="stylesheet">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  {% block head %}{% endblock %}
+</head>
+<body>
+{% block corpo %}
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+  <header>
+    <nav class="navbar navbar-expand-lg barra-topo py-0" aria-label="Navegação principal">
+      <div class="container-xl">
+        <a class="navbar-brand py-2" href="{% url 'painel:inicio' %}">
+          {% include "partials/marca.svg" %}
+          <span>Voos Corporativos<small>Lavronorte</small></span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+                aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menu">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="{% url 'painel:inicio' %}" aria-current="{% nav_ativo '/' %}">Início</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'viagens:lista' %}" aria-current="{% if '/viagens/abastecimentos' not in request.path and '/viagens/passageiros' not in request.path %}{% nav_ativo '/viagens/' %}{% endif %}">Viagens</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'viagens:abastecimentos' %}" aria-current="{% nav_ativo '/viagens/abastecimentos/' %}">Abastecimentos</a></li>
+            {% if perms_app.ver_painel %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'painel:dashboard' %}" aria-current="{% nav_ativo '/indicadores/' %}">Indicadores</a></li>
+            {% endif %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                 aria-current="{% nav_ativo '/aeronaves/' '/viagens/passageiros/' '/conta/usuarios/' %}">Cadastros</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'frota:aeronaves' %}">Aeronaves</a></li>
+                <li><a class="dropdown-item" href="{% url 'viagens:passageiros' %}">Passageiros</a></li>
+                {% if perms_app.gerenciar_usuarios %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'contas:usuarios' %}">Usuários</a></li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle" aria-hidden="true"></i>
+                {{ user.get_short_name|default:user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><span class="dropdown-item-text small texto-suave">
+                  {% for g in user.groups.all %}{{ g.name }}{% if not forloop.last %}, {% endif %}{% empty %}{% if user.is_superuser %}Superusuário{% endif %}{% endfor %}
+                </span></li>
+                <li><a class="dropdown-item" href="{% url 'contas:trocar_senha' %}">Trocar senha</a></li>
+                <li>
+                  <form method="post" action="{% url 'contas:logout' %}">{% csrf_token %}
+                    <button type="submit" class="dropdown-item">Sair</button>
+                  </form>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    <div class="container-xl">
+      {% if messages %}
+      <div class="mensagens">
+        {% for m in messages %}
+        <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags }}{% endif %} alert-dismissible"
+             role="{% if m.tags == 'error' or m.tags == 'warning' %}alert{% else %}status{% endif %}">
+          {{ m }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar aviso"></button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% block conteudo %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <div class="container-xl d-flex flex-wrap justify-content-between gap-2">
+      <span>Sistema de Gestão de Voos Corporativos · Lavronorte</span>
+      <span>Projeto acadêmico – ADS UNIBALSAS 2026.2</span>
+    </div>
+  </footer>
+{% endblock %}
+  <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'js/app.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

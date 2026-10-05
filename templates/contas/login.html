@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar{% endblock %}
+{% block corpo %}
+<main class="tela-login" id="conteudo">
+  <section class="tela-login-arte" aria-labelledby="titulo-arte">
+    <div>
+      <p class="mb-4 d-flex align-items-center gap-2" style="color:#fff">{% include "partials/marca.svg" %} <span class="dados">Lavronorte</span></p>
+      <h1 id="titulo-arte">Agenda, custos e combustível da aeronave em um só lugar.</h1>
+      <p>Registre cada voo com a finalidade, acompanhe os abastecimentos e consulte o histórico de uso sem procurar em planilhas e mensagens.</p>
+    </div>
+    <svg class="carta" viewBox="0 0 800 300" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="#2c5a86" stroke-width="1">
+        <path d="M0 220 Q 200 160 400 210 T 800 180"/><path d="M0 250 Q 220 200 420 240 T 800 215"/>
+        <path d="M0 280 Q 240 240 440 270 T 800 250"/>
+        <circle cx="560" cy="120" r="70"/><circle cx="560" cy="120" r="45"/>
+      </g>
+      <path d="M90 230 C 260 90, 420 80, 560 120" fill="none" stroke="#e07ab9" stroke-width="2.5" stroke-dasharray="2 0"/>
+      <circle cx="90" cy="230" r="6" fill="#e07ab9"/><circle cx="560" cy="120" r="6" fill="#fff"/>
+      <text x="100" y="258" fill="#b9cde0" font-family="B612, sans-serif" font-size="14">SNBS</text>
+      <text x="575" y="116" fill="#fff" font-family="B612, sans-serif" font-size="14">SBPJ</text>
+    </svg>
+  </section>
+
+  <section class="tela-login-form" aria-labelledby="titulo-login">
+    <div class="bloco p-4">
+      <h2 id="titulo-login" class="mb-1">Entrar</h2>
+      <p class="texto-suave mb-4">Use o usuário fornecido pelo administrador do sistema.</p>
+      {% if form.errors %}
+      <div class="alert alert-danger" role="alert">Usuário ou senha incorretos. Confira os dados e tente de novo.</div>
+      {% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% include "partials/campo.html" with campo=form.username %}
+        {% include "partials/campo.html" with campo=form.password %}
+        <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Entrar</button>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}
