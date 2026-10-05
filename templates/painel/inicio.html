@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load formatos %}
+{% block titulo %}Início{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <div>
+    <h1>Olá, {{ user.first_name|default:user.username }}</h1>
+    <p>{{ hoje|date:"l, d \d\e F"|lower|capfirst }}</p>
+  </div>
+  {% if perms_app.agendar_viagem %}<a class="btn btn-primary" href="{% url 'viagens:criar' %}"><i class="bi bi-plus-lg" aria-hidden="true"></i> Agendar viagem</a>{% endif %}
+</div>
+
+<dl class="indicadores indicadores-compactos">
+  <div class="indicador"><dt>Voos agendados</dt><dd>{{ mes.agendadas }}<small>a partir de hoje</small></dd></div>
+  <div class="indicador"><dt>Voos realizados no mês</dt><dd>{{ mes.voos }}</dd></div>
+  <div class="indicador"><dt>Horas voadas no mês</dt><dd>{{ mes.horas|horas }}</dd></div>
+</dl>
+
+{% if pendentes %}
+<section class="bloco mb-3" aria-labelledby="t-pend" style="border-left:4px solid var(--cor-ambar)">
+  <h2 id="t-pend">Voos aguardando registro</h2>
+  <p class="texto-suave">A data já passou e ainda faltam as horas de voo e o consumo. Sem esse registro, eles não entram nos indicadores.</p>
+  <ul class="faixas">{% for viagem in pendentes %}{% include "partials/faixa_voo.html" %}{% endfor %}</ul>
+</section>
+{% endif %}
+
+<section aria-labelledby="t-prox">
+  <div class="d-flex justify-content-between align-items-baseline flex-wrap gap-2 mb-2">
+    <h2 id="t-prox" class="mb-0">Próximos voos</h2>
+    <a href="{% url 'viagens:lista' %}?aba=agendadas">Ver agenda completa</a>
+  </div>
+  {% if proximas %}
+  <ul class="faixas">{% for viagem in proximas %}{% include "partials/faixa_voo.html" %}{% endfor %}</ul>
+  {% else %}
+  <div class="bloco">
+    {% if perms_app.agendar_viagem %}{% url 'viagens:criar' as link %}{% endif %}
+    {% include "partials/vazio.html" with mensagem="Nenhum voo agendado a partir de hoje." link=link link_texto="Agendar viagem" %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

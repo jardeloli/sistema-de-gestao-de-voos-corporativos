@@ -1,0 +1,23 @@
+{% comment %}
+Renderiza um campo com rótulo, ajuda e erro associados (aria-describedby).
+Uso: {% include "partials/campo.html" with campo=form.nome %}
+{% endcomment %}
+{% with id=campo.id_for_label %}
+{% if campo.field.widget.input_type == "checkbox" %}
+<div class="form-check mb-3">
+  {{ campo }}
+  <label class="form-check-label" for="{{ id }}">{{ campo.label }}</label>
+  {% if campo.help_text %}<div class="form-text" id="{{ id }}_ajuda">{{ campo.help_text }}</div>{% endif %}
+  {% if campo.errors %}<div class="invalid-feedback d-block" id="{{ id }}_erro">{{ campo.errors|join:" " }}</div>{% endif %}
+</div>
+{% else %}
+<div class="mb-3">
+  <label class="form-label" for="{{ id }}">
+    {{ campo.label }}{% if campo.field.required %} <span class="obrigatorio" aria-hidden="true">*</span><span class="visually-hidden">(obrigatório)</span>{% endif %}
+  </label>
+  {{ campo }}
+  {% if campo.help_text %}<div class="form-text" id="{{ id }}_ajuda">{{ campo.help_text }}</div>{% endif %}
+  {% if campo.errors %}<div class="invalid-feedback d-block" id="{{ id }}_erro">{{ campo.errors|join:" " }}</div>{% endif %}
+</div>
+{% endif %}
+{% endwith %}

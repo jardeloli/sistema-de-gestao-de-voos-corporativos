@@ -1,0 +1,26 @@
+{% load formatos %}
+<li class="faixa" data-situacao="{% if viagem.aguardando_registro %}pendente{% else %}{{ viagem.status }}{% endif %}">
+  <div class="faixa-quando">
+    <div class="hora">{{ viagem.horario_previsto|time:"H:i" }}</div>
+    <div class="dia">{{ viagem.data|date:"D, d/m/Y" }}</div>
+  </div>
+  <div class="faixa-aeronave">
+    {{ viagem.aeronave.prefixo }}
+    <small>{{ viagem.aeronave.modelo }}</small>
+  </div>
+  <div class="faixa-rota">
+    <span class="ponto"><span class="visually-hidden">De </span>{{ viagem.origem }}</span>
+    <span class="linha" aria-hidden="true"></span>
+    <span class="ponto"><span class="visually-hidden">para </span>{{ viagem.destino }}</span>
+  </div>
+  <div class="faixa-motivo">
+    <span class="finalidade">{{ viagem.get_finalidade_display }}</span>
+    <span class="pax">{% with n=viagem.passageiros.all|length %}{{ n }} passageiro{{ n|pluralize }}{% endwith %}</span>
+  </div>
+  <div class="faixa-acao">
+    <div class="d-flex flex-column align-items-start gap-1">
+      {% include "partials/situacao.html" %}
+      <a href="{% url 'viagens:detalhe' viagem.pk %}" class="small">Ver detalhes<span class="visually-hidden"> do voo {{ viagem.origem }} para {{ viagem.destino }} em {{ viagem.data|date:"d/m" }}</span></a>
+    </div>
+  </div>
+</li>

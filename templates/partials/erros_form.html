@@ -1,0 +1,6 @@
+{% if form.errors %}
+<div class="alert alert-danger" role="alert" id="resumo-erros" tabindex="-1">
+  <strong>Revise os campos destacados.</strong>
+  {% if form.non_field_errors %}<ul class="mb-0 mt-1">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+</div>
+{% endif %}

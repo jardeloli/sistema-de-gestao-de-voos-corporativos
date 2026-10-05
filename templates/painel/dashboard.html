@@ -1,0 +1,118 @@
+{% extends "base.html" %}{% load static formatos %}
+{% block titulo %}Indicadores{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <div><h1>Indicadores de utilização</h1><p>Voos realizados entre {{ inicio|date:"d/m/Y" }} e {{ fim|date:"d/m/Y" }}.</p></div>
+</div>
+
+<form method="get" class="bloco mb-3" aria-label="Período dos indicadores">
+  {% include "partials/erros_form.html" %}
+  <div class="row g-2 align-items-end">
+    <div class="col-6 col-md-3 col-lg-2">{% include "partials/campo.html" with campo=form.inicio %}</div>
+    <div class="col-6 col-md-3 col-lg-2">{% include "partials/campo.html" with campo=form.fim %}</div>
+    <div class="col-md-2 mb-3"><button class="btn btn-primary w-100" type="submit">Atualizar</button></div>
+    <div class="col-lg-6 mb-3">
+      <p class="small texto-suave mb-1" id="atalhos-rotulo">Períodos rápidos</p>
+      <div class="d-flex flex-wrap gap-2" role="group" aria-labelledby="atalhos-rotulo">
+        {% for nome, i, f in atalhos %}<a class="btn btn-sm btn-outline-primary" href="?inicio={{ i|date:'Y-m-d' }}&fim={{ f|date:'Y-m-d' }}"{% if i == inicio and f == fim %} aria-current="true"{% endif %}>{{ nome }}</a>{% endfor %}
+      </div>
+    </div>
+  </div>
+</form>
+
+<dl class="indicadores">
+  <div class="indicador"><dt>Viagens realizadas</dt><dd>{{ kpi.viagens }}<small>{{ kpi.canceladas }} cancelada{{ kpi.canceladas|pluralize }} no período</small></dd></div>
+  <div class="indicador"><dt>Horas de voo</dt><dd>{{ kpi.horas|horas }}</dd></div>
+  <div class="indicador"><dt>Combustível consumido</dt><dd>{{ kpi.consumo|numero:0 }} L<small>média de {% if kpi.consumo_hora %}{{ kpi.consumo_hora|numero }} L/h{% else %}—{% endif %}</small></dd></div>
+  <div class="indicador indicador-destaque"><dt>Custo total</dt><dd>{{ kpi.custo_total|moeda }}<small>{% if kpi.custo_hora %}{{ kpi.custo_hora|moeda }} por hora de voo{% endif %}</small></dd></div>
+  <div class="indicador"><dt>Custo médio por viagem</dt><dd>{% if kpi.custo_medio %}{{ kpi.custo_medio|moeda }}{% else %}—{% endif %}</dd></div>
+</dl>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <section class="bloco h-100" aria-labelledby="t-mes">
+      <h2 id="t-mes">Viagens e horas por mês</h2>
+      <div class="grafico"><canvas id="grafico-meses" role="img" aria-label="Gráfico de viagens e horas de voo por mês. Os mesmos dados estão na tabela abaixo do gráfico."></canvas></div>
+      <details class="mt-2">
+        <summary>Ver dados em tabela</summary>
+        <div class="table-responsive"><table class="table table-sm mt-2">
+          <caption>Viagens e horas de voo por mês</caption>
+          <thead><tr><th scope="col">Mês</th><th scope="col" class="text-end">Viagens</th><th scope="col" class="text-end">Horas</th></tr></thead>
+          <tbody>{% for mes, voos, h in linhas_mes %}<tr><th scope="row" class="fw-normal">{{ mes }}</th><td class="text-end dados">{{ voos }}</td><td class="text-end dados">{{ h|horas }}</td></tr>{% endfor %}</tbody>
+        </table></div>
+      </details>
+    </section>
+  </div>
+  <div class="col-lg-4">
+    <section class="bloco h-100" aria-labelledby="t-custo">
+      <h2 id="t-custo">Custos por tipo</h2>
+      <ul class="ranking">
+        {% for c in graficos.custos %}{% if c.total %}
+        <li><span>{{ c.nome }}</span><span class="dados">{{ c.total|moeda }}</span>
+          <span class="barra" aria-hidden="true"><span style="width:{% widthratio c.total kpi.custo_total 100 %}%"></span></span></li>
+        {% endif %}{% empty %}<li class="texto-suave">Sem custos no período.</li>{% endfor %}
+      </ul>
+    </section>
+  </div>
+  <div class="col-md-6">
+    <section class="bloco h-100" aria-labelledby="t-dest">
+      <h2 id="t-dest">Principais destinos</h2>
+      {% with maximo=top_destinos.0.total %}
+      <ol class="ranking">
+        {% for d in top_destinos %}
+        <li><span>{{ d.destino }}</span><span class="dados">{{ d.total }} voo{{ d.total|pluralize }}</span>
+          <span class="barra" aria-hidden="true"><span style="width:{% widthratio d.total maximo 100 %}%"></span></span></li>
+        {% empty %}<li class="texto-suave">Nenhum voo realizado no período.</li>{% endfor %}
+      </ol>
+      {% endwith %}
+    </section>
+  </div>
+  <div class="col-md-6">
+    <section class="bloco h-100" aria-labelledby="t-fin">
+      <h2 id="t-fin">Principais finalidades</h2>
+      {% with maximo=top_finalidades.0.total %}
+      <ol class="ranking">
+        {% for f in top_finalidades %}
+        <li><span>{{ f.nome }}</span><span class="dados">{{ f.total }} voo{{ f.total|pluralize }}</span>
+          <span class="barra" aria-hidden="true"><span style="width:{% widthratio f.total maximo 100 %}%"></span></span></li>
+        {% empty %}<li class="texto-suave">Nenhum voo realizado no período.</li>{% endfor %}
+      </ol>
+      {% endwith %}
+    </section>
+  </div>
+</div>
+{{ graficos|json_script:"dados-graficos" }}
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/chartjs/chart.umd.min.js' %}"></script>
+<script>
+(function () {
+  const dados = JSON.parse(document.getElementById("dados-graficos").textContent);
+  const canvas = document.getElementById("grafico-meses");
+  if (!window.Chart || !canvas) return;
+  const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  Chart.defaults.font.family = "'Atkinson Hyperlegible', system-ui, sans-serif";
+  Chart.defaults.color = "#4a5866";
+  new Chart(canvas, {
+    data: {
+      labels: dados.meses,
+      datasets: [
+        { type: "bar", label: "Viagens", data: dados.voos, backgroundColor: "#1f4e79", borderRadius: 3, yAxisID: "y" },
+        { type: "line", label: "Horas de voo", data: dados.horas, borderColor: "#9b1d6e", backgroundColor: "#9b1d6e",
+          pointStyle: "rectRot", pointRadius: 4, tension: 0.25, yAxisID: "y1" },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false, animation: reduzir ? false : { duration: 400 },
+      interaction: { mode: "index", intersect: false },
+      plugins: { legend: { position: "bottom" } },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: "Viagens" } },
+        y1: { beginAtZero: true, position: "right", grid: { drawOnChartArea: false }, title: { display: true, text: "Horas" } },
+        x: { grid: { display: false } },
+      },
+    },
+  });
+})();
+</script>
+{% endblock %}
