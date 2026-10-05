@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Alterar viagem{% else %}Agendar viagem{% endif %}{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:lista' %}">Viagens</a></li>{% if object %}<li class="breadcrumb-item"><a href="{% url 'viagens:detalhe' object.pk %}">{{ object.data|date:"d/m/Y" }}</a></li>{% endif %}<li class="breadcrumb-item active" aria-current="page">{% if object %}Alterar{% else %}Agendar{% endif %}</li></ol></nav>
+<div class="cabecalho-pagina"><div><h1>{% if object %}Alterar viagem{% else %}Agendar viagem{% endif %}</h1><p>Campos marcados com <span class="obrigatorio">*</span> são obrigatórios.</p></div></div>
+
+<form method="post" novalidate>{% csrf_token %}
+  {% include "partials/erros_form.html" %}
+  <div class="row g-3">
+    <div class="col-lg-8">
+      <fieldset class="bloco">
+        <legend class="h2">Quando e para onde</legend>
+        <div class="row">
+          <div class="col-md-6">{% include "partials/campo.html" with campo=form.aeronave %}</div>
+          <div class="col-6 col-md-3">{% include "partials/campo.html" with campo=form.data %}</div>
+          <div class="col-6 col-md-3">{% include "partials/campo.html" with campo=form.horario_previsto %}</div>
+          <div class="col-md-6">{% include "partials/campo.html" with campo=form.origem %}</div>
+          <div class="col-md-6">{% include "partials/campo.html" with campo=form.destino %}</div>
+        </div>
+      </fieldset>
+      <fieldset class="bloco">
+        <legend class="h2">Motivo do voo</legend>
+        {% include "partials/campo.html" with campo=form.finalidade %}
+        {% include "partials/campo.html" with campo=form.descricao %}
+        {% include "partials/campo.html" with campo=form.observacoes %}
+      </fieldset>
+    </div>
+    <div class="col-lg-4">
+      <fieldset class="bloco" aria-describedby="contador-pax">
+        <legend class="h2">Passageiros <span class="obrigatorio" aria-hidden="true">*</span></legend>
+        <p class="form-text mt-0">{{ form.passageiros.help_text }}</p>
+        <div class="lista-passageiros{% if form.passageiros.errors %} is-invalid{% endif %}">
+          {% for opcao in form.passageiros %}
+            <label for="{{ opcao.id_for_label }}">{{ opcao.tag }} <span>{{ opcao.choice_label }}</span></label>
+          {% empty %}
+            <p class="texto-suave mb-0">Nenhum passageiro ativo. {% if perms_app.gerenciar_passageiros %}<a href="{% url 'viagens:passageiro_criar' %}">Cadastrar passageiro</a>{% endif %}</p>
+          {% endfor %}
+        </div>
+        <p id="contador-pax" class="contador-passageiros mt-2 mb-0" aria-live="polite"></p>
+        {% if form.passageiros.errors %}<div class="invalid-feedback d-block">{{ form.passageiros.errors|join:" " }}</div>{% endif %}
+      </fieldset>
+    </div>
+  </div>
+  <div class="mt-3 d-flex gap-2 flex-wrap">
+    <button class="btn btn-primary" type="submit">{% if object %}Salvar alterações{% else %}Agendar viagem{% endif %}</button>
+    <a class="btn btn-link" href="{% if object %}{% url 'viagens:detalhe' object.pk %}{% else %}{% url 'viagens:lista' %}{% endif %}">Cancelar</a>
+  </div>
+</form>
+{{ capacidades|json_script:"capacidades" }}
+{% endblock %}

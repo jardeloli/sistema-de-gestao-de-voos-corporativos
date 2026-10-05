@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% load formatos %}
+{% block titulo %}Abastecimentos{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <div><h1>Abastecimentos</h1><p>Combustível abastecido nas aeronaves, com ou sem viagem vinculada.</p></div>
+  {% if perms_app.registrar_abastecimento %}<a class="btn btn-primary" href="{% url 'viagens:abastecimento_criar' %}"><i class="bi bi-fuel-pump" aria-hidden="true"></i> Registrar abastecimento</a>{% endif %}
+</div>
+<div class="bloco p-0"><div class="table-responsive">
+<table class="table table-hover">
+  <caption class="visually-hidden">Abastecimentos registrados</caption>
+  <thead><tr><th scope="col">Data</th><th scope="col">Aeronave</th><th scope="col">Local</th><th scope="col">Combustível</th><th scope="col" class="text-end">Litros</th><th scope="col" class="text-end">R$/L</th><th scope="col" class="text-end">Total</th><th scope="col">Viagem</th>{% if perms_app.registrar_abastecimento %}<th scope="col"><span class="visually-hidden">Ações</span></th>{% endif %}</tr></thead>
+  <tbody>
+  {% for a in abastecimentos %}
+    <tr>
+      <td class="dados">{{ a.data|date:"d/m/Y" }}</td>
+      <td class="dados">{{ a.aeronave.prefixo }}</td>
+      <td>{{ a.local }}</td>
+      <td>{{ a.get_tipo_combustivel_display }}</td>
+      <td class="text-end dados">{{ a.quantidade_litros|numero }}</td>
+      <td class="text-end dados">{{ a.valor_litro|numero:3 }}</td>
+      <td class="text-end dados">{{ a.valor_total|moeda }}</td>
+      <td>{% if a.viagem %}<a href="{% url 'viagens:detalhe' a.viagem_id %}">{{ a.viagem.origem }} → {{ a.viagem.destino }}</a>{% else %}<span class="texto-suave">Sem viagem</span>{% endif %}</td>
+      {% if perms_app.registrar_abastecimento %}<td class="text-end"><a href="{% url 'viagens:abastecimento_editar' a.pk %}">Editar<span class="visually-hidden"> abastecimento de {{ a.data|date:"d/m/Y" }}</span></a></td>{% endif %}
+    </tr>
+  {% empty %}
+    <tr><td colspan="9">{% include "partials/vazio.html" with mensagem="Nenhum abastecimento registrado ainda." %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div></div>
+{% include "partials/paginacao.html" %}
+{% endblock %}

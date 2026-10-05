@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Cancelar viagem{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:lista' %}">Viagens</a></li><li class="breadcrumb-item"><a href="{% url 'viagens:detalhe' viagem.pk %}">{{ viagem.data|date:"d/m/Y" }}</a></li><li class="breadcrumb-item active" aria-current="page">Cancelar</li></ol></nav>
+<div class="row"><div class="col-lg-7">
+  <h1>Cancelar viagem</h1>
+  <ul class="faixas my-3">{% include "partials/faixa_voo.html" %}</ul>
+  <form method="post" class="bloco" novalidate>{% csrf_token %}
+    <p>O voo deixa a agenda, mas o registro continua no histórico com o motivo informado.</p>
+    {% include "partials/campo.html" with campo=form.motivo %}
+    <button class="btn btn-danger" type="submit">Cancelar viagem</button>
+    <a class="btn btn-link" href="{% url 'viagens:detalhe' viagem.pk %}">Voltar sem cancelar</a>
+  </form>
+</div></div>
+{% endblock %}

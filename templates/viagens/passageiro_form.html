@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Editar passageiro{% else %}Cadastrar passageiro{% endif %}{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:passageiros' %}">Passageiros</a></li><li class="breadcrumb-item active" aria-current="page">{% if object %}{{ object.nome }}{% else %}Novo{% endif %}</li></ol></nav>
+<div class="row"><div class="col-lg-7">
+  <h1>{% if object %}Editar passageiro{% else %}Cadastrar passageiro{% endif %}</h1>
+  <form method="post" class="bloco mt-3" novalidate>{% csrf_token %}
+    {% include "partials/erros_form.html" %}
+    {% for campo in form %}{% include "partials/campo.html" %}{% endfor %}
+    <button class="btn btn-primary" type="submit">{% if object %}Salvar alterações{% else %}Cadastrar passageiro{% endif %}</button>
+    <a class="btn btn-link" href="{% url 'viagens:passageiros' %}">Cancelar</a>
+  </form>
+</div></div>
+{% endblock %}

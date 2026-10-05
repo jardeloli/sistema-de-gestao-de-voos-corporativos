@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Registrar voo realizado{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:lista' %}">Viagens</a></li><li class="breadcrumb-item"><a href="{% url 'viagens:detalhe' object.pk %}">{{ object.data|date:"d/m/Y" }}</a></li><li class="breadcrumb-item active" aria-current="page">Registrar voo</li></ol></nav>
+<div class="row"><div class="col-lg-7">
+  <h1>Registrar voo realizado</h1>
+  {% with viagem=object %}<ul class="faixas my-3">{% include "partials/faixa_voo.html" %}</ul>{% endwith %}
+  <form method="post" class="bloco" novalidate>{% csrf_token %}
+    {% include "partials/erros_form.html" %}
+    <div class="row">
+      <div class="col-sm-6">{% include "partials/campo.html" with campo=form.horas_voo %}</div>
+      <div class="col-sm-6">{% include "partials/campo.html" with campo=form.combustivel_consumido %}</div>
+    </div>
+    <p class="dados texto-suave" id="consumo-previa" aria-live="polite"></p>
+    {% include "partials/campo.html" with campo=form.observacoes %}
+    <button class="btn btn-primary" type="submit">Confirmar voo realizado</button>
+    <a class="btn btn-link" href="{% url 'viagens:detalhe' object.pk %}">Cancelar</a>
+  </form>
+</div></div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Editar abastecimento{% else %}Registrar abastecimento{% endif %}{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:abastecimentos' %}">Abastecimentos</a></li><li class="breadcrumb-item active" aria-current="page">{% if object %}Editar{% else %}Registrar{% endif %}</li></ol></nav>
+<div class="row"><div class="col-lg-8">
+  <h1>{% if object %}Editar abastecimento{% else %}Registrar abastecimento{% endif %}</h1>
+  <form method="post" class="bloco mt-3" novalidate>{% csrf_token %}
+    {% include "partials/erros_form.html" %}
+    <div class="row">
+      <div class="col-md-6">{% include "partials/campo.html" with campo=form.aeronave %}</div>
+      <div class="col-md-6">{% include "partials/campo.html" with campo=form.viagem %}</div>
+      <div class="col-md-4">{% include "partials/campo.html" with campo=form.data %}</div>
+      <div class="col-md-8">{% include "partials/campo.html" with campo=form.local %}</div>
+      <div class="col-md-4">{% include "partials/campo.html" with campo=form.tipo_combustivel %}</div>
+      <div class="col-6 col-md-4">{% include "partials/campo.html" with campo=form.quantidade_litros %}</div>
+      <div class="col-6 col-md-4">{% include "partials/campo.html" with campo=form.valor_litro %}</div>
+    </div>
+    <p class="mb-3">Valor total: <strong class="dados" id="valor-total" aria-live="polite">—</strong> <span class="texto-suave small">(calculado automaticamente)</span></p>
+    <button class="btn btn-primary" type="submit">{% if object %}Salvar alterações{% else %}Registrar abastecimento{% endif %}</button>
+    <a class="btn btn-link" href="{% url 'viagens:abastecimentos' %}">Cancelar</a>
+  </form>
+</div></div>
+{% endblock %}

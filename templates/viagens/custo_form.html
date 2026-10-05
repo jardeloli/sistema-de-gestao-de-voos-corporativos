@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}Lançar custo{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:lista' %}">Viagens</a></li><li class="breadcrumb-item"><a href="{% url 'viagens:detalhe' viagem.pk %}">{{ viagem.data|date:"d/m/Y" }}</a></li><li class="breadcrumb-item active" aria-current="page">Lançar custo</li></ol></nav>
+<div class="row"><div class="col-lg-7">
+  <h1>Lançar custo</h1>
+  <ul class="faixas my-3">{% include "partials/faixa_voo.html" %}</ul>
+  <form method="post" class="bloco" novalidate>{% csrf_token %}
+    {% include "partials/erros_form.html" %}
+    <div class="row">
+      <div class="col-md-6">{% include "partials/campo.html" with campo=form.tipo %}</div>
+      <div class="col-6 col-md-3">{% include "partials/campo.html" with campo=form.valor %}</div>
+      <div class="col-6 col-md-3">{% include "partials/campo.html" with campo=form.data %}</div>
+    </div>
+    {% include "partials/campo.html" with campo=form.descricao %}
+    <button class="btn btn-primary" type="submit">Lançar custo</button>
+    <a class="btn btn-link" href="{% url 'viagens:detalhe' viagem.pk %}">Cancelar</a>
+  </form>
+</div></div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}{% load formatos %}
+{% block titulo %}Viagem {{ viagem.origem }} → {{ viagem.destino }}{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'viagens:lista' %}">Viagens</a></li><li class="breadcrumb-item active" aria-current="page">{{ viagem.data|date:"d/m/Y" }}</li></ol></nav>
+
+<div class="cabecalho-pagina">
+  <div>
+    <h1>{{ viagem.get_finalidade_display }}</h1>
+    <p>{{ viagem.data|date:"l, d \d\e F \d\e Y"|lower|capfirst }} às <span class="dados">{{ viagem.horario_previsto|time:"H:i" }}</span> · {% include "partials/situacao.html" %}</p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    {% if viagem.pode_concluir and perms_app.concluir_viagem %}<a class="btn btn-primary" href="{% url 'viagens:concluir' viagem.pk %}"><i class="bi bi-check2-circle" aria-hidden="true"></i> Registrar voo realizado</a>{% endif %}
+    {% if viagem.pode_alterar and perms_app.agendar_viagem %}<a class="btn btn-outline-primary" href="{% url 'viagens:editar' viagem.pk %}">Alterar</a>{% endif %}
+    {% if viagem.pode_cancelar and perms_app.agendar_viagem %}<a class="btn btn-outline-danger" href="{% url 'viagens:cancelar' viagem.pk %}">Cancelar viagem</a>{% endif %}
+  </div>
+</div>
+
+{% if viagem.status == "cancelada" %}
+<div class="alert alert-secondary" role="note">
+  <strong>Viagem cancelada</strong> em {{ viagem.cancelada_em|date:"d/m/Y H:i" }}{% if viagem.cancelada_por %} por {{ viagem.cancelada_por.get_full_name|default:viagem.cancelada_por.username }}{% endif %}.
+  Motivo: {{ viagem.motivo_cancelamento }}
+</div>
+{% elif viagem.aguardando_registro %}
+<div class="alert alert-warning" role="note">A data deste voo já passou. Registre as horas de voo e o consumo para que ele entre nos indicadores.</div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <section class="bloco" aria-labelledby="t-rota">
+      <h2 id="t-rota" class="visually-hidden">Rota e dados do voo</h2>
+      <div class="rota-grande">
+        <div class="ponto"><small>Origem</small>{{ viagem.origem }}</div>
+        <div class="linha" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="#9b1d6e" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg></div>
+        <div class="ponto"><small>Destino</small>{{ viagem.destino }}</div>
+      </div>
+      <dl class="ficha">
+        <div><dt>Aeronave</dt><dd class="dados">{{ viagem.aeronave.prefixo }} <span class="fw-normal texto-suave">{{ viagem.aeronave.modelo }}</span></dd></div>
+        <div><dt>Agendado por</dt><dd>{{ viagem.responsavel.get_full_name|default:viagem.responsavel.username }}</dd></div>
+        <div><dt>Horas de voo</dt><dd class="dados">{{ viagem.horas_voo|horas }}</dd></div>
+        <div><dt>Combustível consumido</dt><dd class="dados">{% if viagem.combustivel_consumido %}{{ viagem.combustivel_consumido|numero }} L{% else %}—{% endif %}</dd></div>
+        <div><dt>Consumo médio</dt><dd class="dados">{% if viagem.consumo_por_hora %}{{ viagem.consumo_por_hora|numero }} L/h{% else %}—{% endif %}</dd></div>
+      </dl>
+      <h3 class="mt-4">Descrição</h3>
+      <p class="mb-0" style="white-space:pre-line">{{ viagem.descricao }}</p>
+      {% if viagem.observacoes %}<h3 class="mt-3">Observações</h3><p class="mb-0" style="white-space:pre-line">{{ viagem.observacoes }}</p>{% endif %}
+    </section>
+
+    <section class="bloco" id="custos" aria-labelledby="t-custos">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+        <h2 id="t-custos" class="mb-0">Custos</h2>
+        {% if perms_app.registrar_custo and viagem.status != "cancelada" %}<a class="btn btn-sm btn-outline-primary" href="{% url 'viagens:custo_criar' viagem.pk %}"><i class="bi bi-plus-lg" aria-hidden="true"></i> Lançar custo</a>{% endif %}
+      </div>
+      <div class="table-responsive">
+      <table class="table">
+        <caption class="visually-hidden">Custos lançados nesta viagem</caption>
+        <thead><tr><th scope="col">Data</th><th scope="col">Tipo</th><th scope="col">Descrição</th><th scope="col" class="text-end">Valor</th>{% if perms_app.registrar_custo %}<th scope="col"><span class="visually-hidden">Ações</span></th>{% endif %}</tr></thead>
+        <tbody>
+        {% for c in viagem.custos.all %}
+          <tr>
+            <td class="dados">{{ c.data|date:"d/m/Y" }}</td><td>{{ c.get_tipo_display }}</td><td>{{ c.descricao }}</td><td class="text-end dados">{{ c.valor|moeda }}</td>
+            {% if perms_app.registrar_custo %}<td class="text-end">
+              <form method="post" action="{% url 'viagens:custo_excluir' c.pk %}" data-confirmar="Remover o custo “{{ c.descricao }}”?">{% csrf_token %}
+                <button class="btn btn-sm btn-link text-danger p-0" type="submit">Remover<span class="visually-hidden"> {{ c.descricao }}</span></button>
+              </form>
+            </td>{% endif %}
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="texto-suave">Nenhum custo lançado.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section class="bloco" id="combustivel" aria-labelledby="t-comb">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+        <h2 id="t-comb" class="mb-0">Abastecimentos</h2>
+        {% if perms_app.registrar_abastecimento and viagem.status != "cancelada" %}<a class="btn btn-sm btn-outline-primary" href="{% url 'viagens:abastecimento_criar' %}?viagem={{ viagem.pk }}"><i class="bi bi-fuel-pump" aria-hidden="true"></i> Registrar abastecimento</a>{% endif %}
+      </div>
+      <div class="table-responsive">
+      <table class="table">
+        <caption class="visually-hidden">Abastecimentos vinculados a esta viagem</caption>
+        <thead><tr><th scope="col">Data</th><th scope="col">Local</th><th scope="col">Combustível</th><th scope="col" class="text-end">Litros</th><th scope="col" class="text-end">R$/L</th><th scope="col" class="text-end">Total</th></tr></thead>
+        <tbody>
+        {% for a in viagem.abastecimentos.all %}
+          <tr><td class="dados">{{ a.data|date:"d/m/Y" }}</td><td>{{ a.local }}</td><td>{{ a.get_tipo_combustivel_display }}</td><td class="text-end dados">{{ a.quantidade_litros|numero }}</td><td class="text-end dados">{{ a.valor_litro|numero:3 }}</td><td class="text-end dados">{{ a.valor_total|moeda }}</td></tr>
+        {% empty %}
+          <tr><td colspan="6" class="texto-suave">Nenhum abastecimento vinculado.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="col-lg-4">
+    <section class="bloco" aria-labelledby="t-total">
+      <h2 id="t-total">Custo da viagem</h2>
+      <dl class="mb-0">
+        <div class="d-flex justify-content-between"><dt class="fw-normal">Combustível</dt><dd class="dados mb-1">{{ viagem.custo_combustivel|moeda }}</dd></div>
+        <div class="d-flex justify-content-between"><dt class="fw-normal">Demais custos</dt><dd class="dados mb-1">{{ viagem.custo_despesas|moeda }}</dd></div>
+        <div class="d-flex justify-content-between border-top pt-2 mt-2"><dt>Total</dt><dd class="total-viagem mb-0">{{ viagem.custo_total|moeda }}</dd></div>
+      </dl>
+    </section>
+    <section class="bloco" aria-labelledby="t-pax">
+      <h2 id="t-pax">Passageiros <span class="texto-suave dados fw-normal">{{ viagem.passageiros.count }}/{{ viagem.aeronave.capacidade_passageiros }}</span></h2>
+      <ul class="list-unstyled mb-0">
+        {% for p in viagem.passageiros.all %}<li class="py-1 border-bottom">{{ p.nome }}{% if p.setor %} <span class="texto-suave small">· {{ p.setor }}</span>{% endif %}</li>{% endfor %}
+      </ul>
+    </section>
+    <p class="small texto-suave mt-3">Criada em {{ viagem.criado_em|date:"d/m/Y H:i" }} · última alteração em {{ viagem.atualizado_em|date:"d/m/Y H:i" }}</p>
+  </div>
+</div>
+{% endblock %}
