@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% load formatos %}
+{% block titulo %}Aeronaves{% endblock %}
+{% block conteudo %}
+<div class="cabecalho-pagina">
+  <div><h1>Aeronaves</h1><p>Aeronaves disponíveis para os voos corporativos.</p></div>
+  {% if perms_app.gerenciar_aeronaves %}<a class="btn btn-primary" href="{% url 'frota:aeronave_criar' %}"><i class="bi bi-plus-lg" aria-hidden="true"></i> Cadastrar aeronave</a>{% endif %}
+</div>
+<div class="bloco p-0"><div class="table-responsive">
+<table class="table table-hover">
+  <caption class="visually-hidden">Aeronaves cadastradas</caption>
+  <thead><tr><th scope="col">Prefixo</th><th scope="col">Modelo</th><th scope="col">Identificação</th><th scope="col" class="text-end">Passageiros</th><th scope="col" class="text-end">Voos realizados</th><th scope="col" class="text-end">Horas de voo</th><th scope="col">Situação</th>{% if perms_app.gerenciar_aeronaves %}<th scope="col"><span class="visually-hidden">Ações</span></th>{% endif %}</tr></thead>
+  <tbody>
+  {% for a in aeronaves %}
+    <tr>
+      <td class="dados fw-bold">{{ a.prefixo }}</td>
+      <td>{{ a.fabricante }} {{ a.modelo }}</td>
+      <td>{{ a.identificacao }}</td>
+      <td class="text-end dados">{{ a.capacidade_passageiros }}</td>
+      <td class="text-end dados">{{ a.total_voos }}</td>
+      <td class="text-end dados">{{ a.total_horas|horas }}</td>
+      <td>{% if a.ativa %}<span class="situacao situacao-realizada">Em operação</span>{% else %}<span class="situacao situacao-cancelada">Fora de operação</span>{% endif %}</td>
+      {% if perms_app.gerenciar_aeronaves %}<td class="text-end"><a href="{% url 'frota:aeronave_editar' a.pk %}">Editar<span class="visually-hidden"> {{ a.prefixo }}</span></a></td>{% endif %}
+    </tr>
+  {% empty %}
+    <tr><td colspan="8">{% url 'frota:aeronave_criar' as link %}{% include "partials/vazio.html" with mensagem="Nenhuma aeronave cadastrada. Cadastre a primeira para começar a agendar voos." link=link link_texto="Cadastrar aeronave" %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div></div>
+{% endblock %}

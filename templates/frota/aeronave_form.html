@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block titulo %}{% if object %}Editar aeronave{% else %}Cadastrar aeronave{% endif %}{% endblock %}
+{% block conteudo %}
+<nav aria-label="Trilha"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'frota:aeronaves' %}">Aeronaves</a></li><li class="breadcrumb-item active" aria-current="page">{% if object %}{{ object.prefixo }}{% else %}Nova{% endif %}</li></ol></nav>
+<div class="cabecalho-pagina"><div><h1>{% if object %}Editar {{ object.prefixo }}{% else %}Cadastrar aeronave{% endif %}</h1></div></div>
+<form method="post" class="bloco" novalidate>{% csrf_token %}
+  {% include "partials/erros_form.html" %}
+  <div class="row">
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.prefixo %}</div>
+    <div class="col-md-8">{% include "partials/campo.html" with campo=form.identificacao %}</div>
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.fabricante %}</div>
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.modelo %}</div>
+    <div class="col-md-4">{% include "partials/campo.html" with campo=form.capacidade_passageiros %}</div>
+    <div class="col-12">{% include "partials/campo.html" with campo=form.ativa %}</div>
+  </div>
+  <button class="btn btn-primary" type="submit">{% if object %}Salvar alterações{% else %}Cadastrar aeronave{% endif %}</button>
+  <a class="btn btn-link" href="{% url 'frota:aeronaves' %}">Cancelar</a>
+</form>
+{% endblock %}
