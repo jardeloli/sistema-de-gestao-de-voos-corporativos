@@ -1,0 +1,218 @@
+/* =========================================================================
+   Gestão de Voos Corporativos – Lavronorte
+   Tokens visuais inspirados nas cartas aeronáuticas (azul e magenta) e nas
+   fontes de legibilidade: B612 (Airbus, displays de cabine) para dados de voo
+   e Atkinson Hyperlegible para o texto corrido.
+   ========================================================================= */
+:root {
+  --cor-tinta: #1b2733;
+  --cor-tinta-suave: #4a5866;
+  --cor-papel: #f4f6f2;
+  --cor-superficie: #ffffff;
+  --cor-linha: #d3d9d1;
+  --cor-azul-carta: #1f4e79;
+  --cor-azul-escuro: #15385a;
+  --cor-azul-claro: #e4edf6;
+  --cor-magenta: #9b1d6e;
+  --cor-soja: #2f6b2c;
+  --cor-soja-claro: #e5f0e3;
+  --cor-ambar: #8a5300;
+  --cor-ambar-claro: #fbf0dc;
+  --cor-cancelada: #6b7280;
+
+  --fonte-texto: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --fonte-dados: "B612", "Segoe UI", system-ui, sans-serif;
+
+  --raio-pequeno: 4px;
+  --raio-medio: 8px;
+  --espaco: 1rem;
+
+  /* Integração com o Bootstrap 5.3 */
+  --bs-body-font-family: var(--fonte-texto);
+  --bs-body-color: var(--cor-tinta);
+  --bs-body-bg: var(--cor-papel);
+  --bs-border-color: var(--cor-linha);
+  --bs-primary: var(--cor-azul-carta);
+  --bs-primary-rgb: 31, 78, 121;
+  --bs-link-color: var(--cor-azul-carta);
+  --bs-link-color-rgb: 31, 78, 121;
+  --bs-link-hover-color: var(--cor-magenta);
+  --bs-link-hover-color-rgb: 155, 29, 110;
+  --bs-secondary-color: var(--cor-tinta-suave);
+  --bs-border-radius: var(--raio-medio);
+}
+
+body { font-size: 1.0625rem; line-height: 1.55; }
+h1, h2, h3, .h2 { font-family: var(--fonte-dados); letter-spacing: -0.01em; color: var(--cor-azul-escuro); }
+h1 { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem); }
+h2, .h2 { font-size: 1.25rem; }
+legend.h2 { margin-bottom: 1rem; }
+h3 { font-size: 1.05rem; }
+.texto-suave { color: var(--cor-tinta-suave); }
+.dados { font-family: var(--fonte-dados); font-variant-numeric: tabular-nums; }
+
+/* ---------- Acessibilidade ---------- */
+.pular-conteudo {
+  position: absolute; left: 1rem; top: -100px; z-index: 2000;
+  background: var(--cor-superficie); color: var(--cor-azul-escuro);
+  padding: .5rem 1rem; border: 2px solid var(--cor-magenta); border-radius: var(--raio-pequeno);
+}
+.pular-conteudo:focus { top: .5rem; }
+:focus-visible { outline: 3px solid var(--cor-magenta) !important; outline-offset: 2px; box-shadow: none !important; }
+.form-control:focus, .form-select:focus, .btn:focus, .form-check-input:focus { box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* ---------- Barra superior ---------- */
+.barra-topo { background: var(--cor-azul-escuro); }
+.barra-topo .navbar-brand { font-family: var(--fonte-dados); font-size: 1.05rem; color: #fff; display: flex; gap: .6rem; align-items: center; }
+.barra-topo .navbar-brand small { color: #b9cde0; font-family: var(--fonte-texto); font-size: .8rem; display: block; line-height: 1; }
+.barra-topo .nav-link { color: #d9e4ef; padding: .9rem .85rem !important; border-bottom: 3px solid transparent; }
+.barra-topo .nav-link:hover { color: #fff; }
+.barra-topo .nav-link[aria-current="page"] { color: #fff; border-bottom-color: #e07ab9; }
+.barra-topo .navbar-toggler { border-color: #b9cde0; }
+.barra-topo .navbar-toggler-icon { filter: invert(1); }
+.marca-rota { width: 34px; height: 34px; flex: none; }
+@media (max-width: 991.98px) {
+  .barra-topo .nav-link { border-bottom: 0; border-left: 3px solid transparent; padding: .6rem .75rem !important; }
+  .barra-topo .nav-link[aria-current="page"] { border-left-color: #e07ab9; }
+}
+
+/* ---------- Estrutura ---------- */
+main { padding-block: 1.5rem 3rem; }
+.cabecalho-pagina { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: end; justify-content: space-between; margin-bottom: 1.25rem; }
+.cabecalho-pagina h1 { margin: 0; }
+.cabecalho-pagina p { margin: .25rem 0 0; color: var(--cor-tinta-suave); }
+.bloco { background: var(--cor-superficie); border: 1px solid var(--cor-linha); border-radius: var(--raio-medio); padding: 1.25rem; }
+.bloco + .bloco { margin-top: 1rem; }
+.bloco > h2:first-child { margin-bottom: 1rem; }
+.btn { font-weight: 700; border-radius: var(--raio-pequeno); }
+.btn-primary { --bs-btn-bg: var(--cor-azul-carta); --bs-btn-border-color: var(--cor-azul-carta); --bs-btn-hover-bg: var(--cor-azul-escuro); --bs-btn-hover-border-color: var(--cor-azul-escuro); --bs-btn-active-bg: var(--cor-azul-escuro); }
+.btn-outline-primary { --bs-btn-color: var(--cor-azul-carta); --bs-btn-border-color: var(--cor-azul-carta); --bs-btn-hover-bg: var(--cor-azul-carta); --bs-btn-hover-border-color: var(--cor-azul-carta); }
+.form-control, .form-select { background-color: var(--cor-superficie); }
+.form-label { font-weight: 700; margin-bottom: .3rem; }
+.form-text { color: var(--cor-tinta-suave); }
+.obrigatorio { color: var(--cor-magenta); }
+.invalid-feedback { color: #a1122a; font-weight: 700; }
+.form-control.is-invalid, .form-select.is-invalid { border-color: #a1122a; }
+.lista-passageiros { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .25rem 1rem; max-height: 260px; overflow-y: auto; padding: .75rem; border: 1px solid var(--cor-linha); border-radius: var(--raio-pequeno); background: var(--cor-superficie); }
+.lista-passageiros label { display: flex; gap: .5rem; align-items: flex-start; padding: .25rem 0; cursor: pointer; }
+.lista-passageiros input { margin-top: .3rem; }
+.lista-passageiros.is-invalid { border-color: #a1122a; }
+.contador-passageiros { font-family: var(--fonte-dados); font-size: .9rem; }
+
+/* ---------- Situação da viagem (cor + texto, nunca só cor) ---------- */
+.situacao { display: inline-flex; align-items: center; gap: .35rem; font-size: .85rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.situacao::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: currentColor; }
+.situacao-agendada { color: var(--cor-azul-carta); background: var(--cor-azul-claro); }
+.situacao-realizada { color: var(--cor-soja); background: var(--cor-soja-claro); }
+.situacao-cancelada { color: var(--cor-cancelada); background: #f1f2f3; }
+.situacao-pendente { color: var(--cor-ambar); background: var(--cor-ambar-claro); }
+
+/* ---------- Faixa de voo (inspirada nas fichas de progresso de voo) ---------- */
+.faixas { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+.faixa {
+  --cor-borda: var(--cor-azul-carta);
+  position: relative; display: grid; grid-template-columns: 7.5rem 6.5rem minmax(0, 1fr) 13rem auto;
+  align-items: stretch; background: var(--cor-superficie); border: 1px solid var(--cor-linha);
+  border-left: 6px solid var(--cor-borda); border-radius: var(--raio-pequeno);
+}
+.faixa[data-situacao="realizada"] { --cor-borda: var(--cor-soja); }
+.faixa[data-situacao="cancelada"] { --cor-borda: var(--cor-cancelada); }
+.faixa[data-situacao="pendente"] { --cor-borda: var(--cor-ambar); }
+.faixa > * { padding: .7rem .9rem; }
+.faixa > * + * { border-left: 1px dashed var(--cor-linha); }
+.faixa:hover { border-color: var(--cor-azul-carta); border-left-color: var(--cor-borda); }
+.faixa-quando { font-family: var(--fonte-dados); font-variant-numeric: tabular-nums; }
+.faixa-quando .hora { font-size: 1.35rem; line-height: 1.1; color: var(--cor-azul-escuro); }
+.faixa-quando .dia { font-size: .85rem; color: var(--cor-tinta-suave); }
+.faixa-aeronave { font-family: var(--fonte-dados); font-size: .95rem; }
+.faixa-aeronave small { display: block; color: var(--cor-tinta-suave); font-family: var(--fonte-texto); font-size: .8rem; }
+.faixa-rota { display: grid; grid-template-columns: minmax(0, 1fr) minmax(2.5rem, 5rem) minmax(0, 1fr); align-items: center; gap: .6rem; }
+.faixa-rota .ponto { font-family: var(--fonte-dados); font-size: 1rem; overflow-wrap: anywhere; }
+.faixa-rota .ponto:last-child { text-align: right; }
+.faixa-rota .linha { position: relative; height: 2px; background: var(--cor-magenta); }
+.faixa-rota .linha::before, .faixa-rota .linha::after { content: ""; position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--cor-magenta); background: var(--cor-superficie); }
+.faixa-rota .linha::before { left: -4px; }
+.faixa-rota .linha::after { right: -4px; background: var(--cor-magenta); }
+.faixa[data-situacao="cancelada"] .faixa-rota .linha { background: repeating-linear-gradient(90deg, var(--cor-cancelada) 0 6px, transparent 6px 10px); }
+.faixa[data-situacao="cancelada"] .faixa-rota .ponto { text-decoration: line-through; color: var(--cor-tinta-suave); }
+.faixa-motivo { font-size: .9rem; }
+.faixa-motivo .finalidade { font-weight: 700; display: block; }
+.faixa-motivo .pax { color: var(--cor-tinta-suave); }
+.faixa-acao { display: flex; align-items: center; }
+.faixa-acao a::after { content: ""; position: absolute; inset: 0; } /* área de clique na faixa inteira */
+@media (max-width: 991.98px) {
+  .faixa { grid-template-columns: 6rem minmax(0, 1fr); }
+  .faixa-quando { grid-row: span 2; }
+  .faixa-rota { grid-column: 2; }
+  .faixa-aeronave { grid-column: 2; border-left: 0 !important; padding-bottom: 0; }
+  .faixa-motivo { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px dashed var(--cor-linha); }
+  .faixa-acao { grid-column: 1 / -1; border-left: 0 !important; padding-top: 0; }
+  .faixa-aeronave { order: -1; }
+}
+@media (max-width: 575.98px) {
+  .faixa { grid-template-columns: 1fr; }
+  .faixa-quando { grid-row: auto; display: flex; gap: .75rem; align-items: baseline; }
+  .faixa-rota, .faixa-aeronave { grid-column: 1; border-left: 0 !important; }
+  .faixa-aeronave { order: 0; padding-top: 0; }
+}
+
+/* ---------- Indicadores ---------- */
+.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; margin: 0 0 1rem; }
+.indicadores-compactos { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.indicador { background: var(--cor-superficie); border: 1px solid var(--cor-linha); border-top: 3px solid var(--cor-azul-carta); border-radius: var(--raio-pequeno); padding: .9rem 1rem; }
+.indicador dt { font-weight: 400; color: var(--cor-tinta-suave); font-size: .9rem; }
+.indicador dd { margin: .2rem 0 0; font-family: var(--fonte-dados); font-size: clamp(1.25rem, 1rem + .6vw, 1.5rem); color: var(--cor-azul-escuro); font-variant-numeric: tabular-nums; }
+.indicador dd small { font-family: var(--fonte-texto); font-size: .85rem; color: var(--cor-tinta-suave); display: block; }
+.indicador-destaque { border-top-color: var(--cor-magenta); }
+.grafico { position: relative; height: 280px; }
+.ranking { list-style: none; padding: 0; margin: 0; }
+.ranking li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .75rem; padding: .45rem 0; border-bottom: 1px solid var(--cor-linha); }
+.ranking li:last-child { border-bottom: 0; }
+.ranking .barra { grid-column: 1 / -1; height: 6px; background: var(--cor-azul-claro); border-radius: 3px; overflow: hidden; }
+.ranking .barra span { display: block; height: 100%; background: var(--cor-azul-carta); }
+
+/* ---------- Tabelas ---------- */
+.table { --bs-table-bg: var(--cor-superficie); margin-bottom: 0; }
+.table thead th { font-size: .85rem; color: var(--cor-tinta-suave); font-weight: 700; border-bottom-width: 2px; white-space: nowrap; }
+.table td { vertical-align: middle; }
+caption { caption-side: top; color: var(--cor-tinta-suave); padding-top: 0; }
+
+/* ---------- Detalhe da viagem ---------- */
+.rota-grande { display: grid; grid-template-columns: minmax(0, 1fr) minmax(3rem, 8rem) minmax(0, 1fr); gap: 1rem; align-items: center; margin: .5rem 0 1rem; }
+.rota-grande .ponto { font-family: var(--fonte-dados); font-size: clamp(1.1rem, .9rem + 1vw, 1.6rem); color: var(--cor-azul-escuro); overflow-wrap: anywhere; }
+.rota-grande .ponto small { display: block; font-family: var(--fonte-texto); font-size: .85rem; color: var(--cor-tinta-suave); }
+.rota-grande .ponto:last-child { text-align: right; }
+.rota-grande .linha { height: 2px; background: var(--cor-magenta); position: relative; }
+.rota-grande .linha svg { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--cor-superficie); padding: 0 .25rem; }
+.ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .75rem 1.5rem; margin: 0; }
+.ficha dt { font-size: .85rem; color: var(--cor-tinta-suave); font-weight: 400; }
+.ficha dd { margin: 0; font-weight: 700; }
+.total-viagem { font-family: var(--fonte-dados); font-size: 1.4rem; color: var(--cor-azul-escuro); }
+
+/* ---------- Login ---------- */
+.tela-login { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 1fr); }
+.tela-login-arte { background: var(--cor-azul-escuro); color: #e8eff6; padding: 3rem; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative; }
+.tela-login-arte h1 { color: #fff; font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.4rem); max-width: 18ch; }
+.tela-login-arte p { max-width: 42ch; color: #c7d6e4; }
+.tela-login-arte svg.carta { position: absolute; inset: auto -10% -5% -10%; width: 120%; opacity: .9; pointer-events: none; }
+.tela-login-form { display: flex; align-items: center; justify-content: center; padding: 2rem 1.25rem; }
+.tela-login-form .bloco { width: 100%; max-width: 400px; }
+@media (max-width: 767.98px) {
+  .tela-login { grid-template-columns: 1fr; }
+  .tela-login-arte { min-height: auto; padding: 1.5rem; }
+  .tela-login-arte svg.carta { display: none; }
+}
+
+/* ---------- Filtros e abas ---------- */
+.abas { display: flex; gap: .25rem; border-bottom: 2px solid var(--cor-linha); margin-bottom: 1rem; overflow-x: auto; }
+.abas a { padding: .55rem 1rem; text-decoration: none; color: var(--cor-tinta-suave); font-weight: 700; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.abas a[aria-current="page"] { color: var(--cor-azul-escuro); border-bottom-color: var(--cor-magenta); }
+.abas .contagem { font-family: var(--fonte-dados); font-size: .8rem; background: var(--cor-ambar-claro); color: var(--cor-ambar); border-radius: 999px; padding: 0 .45rem; margin-left: .25rem; }
+.vazio { text-align: center; padding: 2.5rem 1rem; color: var(--cor-tinta-suave); }
+.vazio svg { color: var(--cor-linha); margin-bottom: .75rem; }
+
+.rodape { font-size: .85rem; color: var(--cor-tinta-suave); border-top: 1px solid var(--cor-linha); padding-block: 1rem; }
+.btn-outline-primary[aria-current="true"] { background: var(--cor-azul-carta); color: #fff; }
