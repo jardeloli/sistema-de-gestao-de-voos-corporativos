@@ -1,0 +1,5 @@
+Django>=5.2,<5.3
+python-dotenv>=1.0
+whitenoise>=6.7
+psycopg[binary]>=3.2   # necessário apenas com DB_ENGINE=postgres
+gunicorn>=23.0         # servidor de produção (Linux)
