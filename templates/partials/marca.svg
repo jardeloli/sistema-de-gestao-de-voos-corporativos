@@ -1,6 +1,6 @@
 <svg class="marca-rota" viewBox="0 0 34 34" aria-hidden="true" focusable="false">
-  <circle cx="17" cy="17" r="15.5" fill="none" stroke="#b9cde0" stroke-width="1.5"/>
-  <path d="M6 23 C 12 10, 22 10, 28 12" fill="none" stroke="#e07ab9" stroke-width="2" stroke-linecap="round"/>
-  <circle cx="6" cy="23" r="2.4" fill="#e07ab9"/>
-  <path d="M28 12 l-5.5 -2.6 l1.2 2.6 l-1.6 2.4 z" fill="#fff"/>
+  <rect width="34" height="34" rx="9" fill="#c9e36a"/>
+  <path d="M7 23 C 12 11, 21 10, 27 12" fill="none" stroke="#123c27" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="7" cy="23" r="2.4" fill="#123c27"/>
+  <path d="M27 12 l-5.5 -2.6 l1.2 2.6 l-1.6 2.4 z" fill="#123c27"/>
 </svg>

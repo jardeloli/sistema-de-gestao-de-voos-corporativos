@@ -92,13 +92,13 @@
   if (!window.Chart || !canvas) return;
   const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   Chart.defaults.font.family = "'Atkinson Hyperlegible', system-ui, sans-serif";
-  Chart.defaults.color = "#4a5866";
+  Chart.defaults.color = "#5e6b63";
   new Chart(canvas, {
     data: {
       labels: dados.meses,
       datasets: [
-        { type: "bar", label: "Viagens", data: dados.voos, backgroundColor: "#1f4e79", borderRadius: 3, yAxisID: "y" },
-        { type: "line", label: "Horas de voo", data: dados.horas, borderColor: "#9b1d6e", backgroundColor: "#9b1d6e",
+        { type: "bar", label: "Viagens", data: dados.voos, backgroundColor: "#1e5b3a", borderRadius: 3, yAxisID: "y" },
+        { type: "line", label: "Horas de voo", data: dados.horas, borderColor: "#3478b8", backgroundColor: "#3478b8",
           pointStyle: "rectRot", pointRadius: 4, tension: 0.25, yAxisID: "y1" },
       ],
     },
