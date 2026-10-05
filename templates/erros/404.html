@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Página não encontrada{% endblock %}
+{% block conteudo %}
+<div class="bloco text-center py-5">
+  <h1>Página não encontrada</h1>
+  <p class="texto-suave">O endereço pode estar incorreto ou o registro foi removido.</p>
+  <a class="btn btn-primary" href="{% url 'painel:inicio' %}">Voltar ao início</a>
+</div>
+{% endblock %}

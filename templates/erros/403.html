@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Acesso não permitido{% endblock %}
+{% block conteudo %}
+<div class="bloco text-center py-5">
+  <h1>Acesso não permitido</h1>
+  <p class="texto-suave">Seu perfil não tem acesso a esta funcionalidade. Se precisar dela, peça ao administrador do sistema para ajustar seu perfil.</p>
+  <a class="btn btn-primary" href="{% url 'painel:inicio' %}">Voltar ao início</a>
+</div>
+{% endblock %}
