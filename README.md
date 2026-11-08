@@ -98,7 +98,7 @@ No `.env`, defina `DB_ENGINE=postgres` e preencha `DB_NAME`, `DB_USER`, `DB_PASS
 python manage.py test apps
 ```
 
-São 15 testes cobrindo regras de agendamento, cancelamento, cálculo de custos, controle de acesso e abertura de todas as telas.
+São 16 testes cobrindo regras de agendamento, cancelamento, cálculo de custos, controle de acesso e abertura de todas as telas.
 
 ## Estrutura
 
