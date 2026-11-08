@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Erro interno{% endblock %}
+{% block conteudo %}
+<div class="bloco text-center py-5">
+  <h1>Algo deu errado</h1>
+  <p class="texto-suave">Ocorreu um erro inesperado no servidor. Já fomos notificados. Tente novamente em alguns instantes.</p>
+  <a class="btn btn-primary" href="{% url 'painel:inicio' %}">Voltar ao início</a>
+</div>
+{% endblock %}

@@ -11,3 +11,5 @@ urlpatterns = [
 
 handler403 = "apps.painel.erros.acesso_negado"
 handler404 = "apps.painel.erros.nao_encontrado"
+handler400 = "apps.painel.erros.requisicao_invalida"
+handler500 = "apps.painel.erros.erro_servidor"
