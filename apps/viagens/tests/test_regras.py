@@ -99,6 +99,18 @@ class Custos(Base):
         )
         self.assertEqual(a.valor_total, Decimal("2536.50"))
 
+    def test_abastecimento_vinculado_a_viagem_pelo_formulario(self):
+        v = self.criar_viagem()
+        self.client.force_login(self.usuarios[perfis.OPERACIONAL])
+        r = self.client.post(reverse("viagens:abastecimento_criar"), {
+            "aeronave": self.aeronave.pk, "viagem": v.pk, "data": timezone.localdate().isoformat(),
+            "quantidade_litros": "400", "tipo_combustivel": "qav1", "valor_litro": "8.790", "local": "SNBS",
+        })
+        self.assertEqual(r.status_code, 302)
+        a = Abastecimento.objects.get()
+        self.assertEqual(a.viagem, v)
+        self.assertEqual(a.valor_total, Decimal("3516.00"))
+
     def test_custo_total_soma_despesas_e_combustivel_sem_duplicar(self):
         v = self.criar_viagem()
         op = self.usuarios[perfis.OPERACIONAL]
