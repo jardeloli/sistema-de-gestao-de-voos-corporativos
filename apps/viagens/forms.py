@@ -142,8 +142,18 @@ class AbastecimentoForm(EstiloBootstrapMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["aeronave"].queryset = Aeronave.objects.filter(ativa=True)
         self.fields["aeronave"].empty_label = "Selecione a aeronave"
+        # Lista as 60 viagens mais recentes. A consulta não pode ser fatiada
+        # diretamente ([:60]): o Django valida a escolha com .get() no queryset
+        # e um queryset fatiado não aceita filtros, o que rejeitava qualquer
+        # viagem selecionada. Por isso os ids são resolvidos antes.
+        ids = list(
+            Viagem.objects.exclude(status=Status.CANCELADA).order_by("-data").values_list("pk", flat=True)[:60]
+        )
+        vinculada = self.initial.get("viagem") or self.instance.viagem_id
+        if vinculada:
+            ids.append(getattr(vinculada, "pk", vinculada))
         self.fields["viagem"].queryset = (
-            Viagem.objects.exclude(status=Status.CANCELADA).select_related("aeronave").order_by("-data")[:60]
+            Viagem.objects.filter(pk__in=ids).select_related("aeronave").order_by("-data")
         )
         self.fields["viagem"].empty_label = "Sem viagem vinculada"
         self.fields["viagem"].label_from_instance = (
